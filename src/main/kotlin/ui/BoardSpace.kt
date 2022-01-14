@@ -12,7 +12,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BoardSpace(height: Dp) {
+fun BoardSpace(
+	height: Dp,
+	columns: Int = 6,
+	rows: Int = 5
+) {
 	BoxWithConstraints(
 		modifier = Modifier
 			.border(width = 1.dp, color = Color.Black)
@@ -22,17 +26,14 @@ fun BoardSpace(height: Dp) {
 	) {
 		val width = this.maxWidth
 
-		val colCount = 6
-		val rowCount = 5
-
-		val borderModifier = Modifier.border(width = 1.dp, color = Color.Black)
-		val rowHeight = height / rowCount
-		val rowModifier = borderModifier.height(rowHeight).fillMaxWidth()
-		val cellModifier = borderModifier.width(width / colCount).height(rowHeight)
+		val borderModifier = Modifier.border(1.dp, Color.Black).padding(1.dp)
+		val rowHeight = height / rows
+		val rowModifier = Modifier.height(rowHeight).fillMaxWidth()
+		val cellModifier = borderModifier.width(width / columns).height(rowHeight)
 		Column {
-			for (row in 1..rowCount) {
+			for (row in 1..rows) {
 				Row(modifier = rowModifier) {
-					for (col in 1..colCount) {
+					for (col in 1..columns) {
 						Button(modifier = cellModifier, onClick = {}) {
 							Text("Example")
 						}

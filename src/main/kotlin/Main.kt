@@ -17,6 +17,7 @@ fun App() {
 fun main() = application {
 	Window(
 		onCloseRequest = ::exitApplication,
+		title = "BongoBoard!"
 	) {
 		App()
 	}
