@@ -26,11 +26,14 @@ import androidx.compose.ui.unit.dp
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.End,
-		modifier = Modifier.fillMaxWidth().height(height)
+		modifier = Modifier.fillMaxWidth()
 	) {
+		val buttonModifier = Modifier
+			.height(height)
+			.padding(5.dp)
 		Button(
 			onClick = {},
-			modifier = Modifier.fillMaxHeight(),
+			modifier = buttonModifier,
 			colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
 		) {
 			Text("Add")
@@ -38,7 +41,7 @@ import androidx.compose.ui.unit.dp
 
 		Button(
 			onClick = {},
-			modifier = Modifier.fillMaxHeight(),
+			modifier = buttonModifier,
 			colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
 		) {
 			Text("Remove")
