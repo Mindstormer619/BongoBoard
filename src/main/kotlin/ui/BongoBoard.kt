@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BongoBoard() {
 	BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-		val optionsRowHeight = 40.dp
+		val optionsRowHeight = 50.dp
 		val boardSpaceHeight = this.maxHeight - optionsRowHeight
 
 		var boardRows by remember { mutableStateOf(5) }
