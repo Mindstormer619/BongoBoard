@@ -1,19 +1,18 @@
 package ui
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import ui.components.NumberInput
 
 @Composable
+@Preview
 fun BongoBoard() {
 	BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 		val optionsRowHeight = 50.dp
@@ -30,15 +29,21 @@ fun BongoBoard() {
 
 			OptionsRow(
 				optionsRowHeight,
-				{ boardRows++ },
-				{ boardColumns++ },
+				boardRows,
 				{
-					boardRows--
-					if (boardRows < 1) boardRows = 1
+					boardRows = when {
+						it > 6 -> 6
+						it < 1 -> 1
+						else -> it
+					}
 				},
+				boardColumns,
 				{
-					boardColumns--
-					if (boardColumns < 1) boardColumns = 1
+					boardColumns = when {
+						it > 10 -> 10
+						it < 1 -> 1
+						else -> it
+					}
 				}
 			)
 		}
@@ -48,47 +53,22 @@ fun BongoBoard() {
 @Composable
 fun OptionsRow(
 	height: Dp,
-	addRow: () -> Unit,
-	addColumn: () -> Unit,
-	delRow: () -> Unit,
-	delColumn: () -> Unit
+	rows: Int,
+	updateRows: (Int) -> Unit,
+	cols: Int,
+	updateCols: (Int) -> Unit
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.End,
 		modifier = Modifier.fillMaxWidth()
 	) {
-		val buttonModifier = Modifier
-			.height(height)
-			.padding(5.dp)
-		Button(
-			onClick = addRow,
-			modifier = buttonModifier,
-			colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
-		) {
-			Text("Add Row")
-		}
-		Button(
-			onClick = addColumn,
-			modifier = buttonModifier,
-			colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
-		) {
-			Text("Add Column")
-		}
-
-		Button(
-			onClick = delRow,
-			modifier = buttonModifier,
-			colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
-		) {
-			Text("Remove Row")
-		}
-		Button(
-			onClick = delColumn,
-			modifier = buttonModifier,
-			colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
-		) {
-			Text("Remove Column")
-		}
+		Text("Rows:")
+		Spacer(modifier = Modifier.width(5.dp))
+		NumberInput(DpSize(100.dp, height), value = rows, onValueChange = updateRows)
+		Spacer(modifier = Modifier.width(30.dp))
+		Text("Columns:")
+		Spacer(modifier = Modifier.width(5.dp))
+		NumberInput(DpSize(100.dp, height), value = cols, onValueChange = updateCols)
 	}
 }
