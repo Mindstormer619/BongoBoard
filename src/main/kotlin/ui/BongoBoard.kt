@@ -6,69 +6,40 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import ui.components.NumberInput
+import ui.state.BoardState
+import ui.state.rememberBoardState
 
 @Composable
 @Preview
-fun BongoBoard() {
+fun BongoBoard(state: BoardState = rememberBoardState()) {
 	BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-		val optionsRowHeight = 50.dp
-		val boardSpaceHeight = this.maxHeight - optionsRowHeight
+		val boardSpaceHeight = maxHeight - BoardState.OPTIONS_ROW_HEIGHT
 
-		var boardRows by remember { mutableStateOf(5) }
-		var boardColumns by remember { mutableStateOf(6) }
 		Column(modifier = Modifier.fillMaxSize()) {
-			BoardSpace(
-				boardSpaceHeight,
-				columns = boardColumns,
-				rows = boardRows
-			)
-
-			OptionsRow(
-				optionsRowHeight,
-				boardRows,
-				{
-					boardRows = when {
-						it > 6 -> 6
-						it < 1 -> 1
-						else -> it
-					}
-				},
-				boardColumns,
-				{
-					boardColumns = when {
-						it > 10 -> 10
-						it < 1 -> 1
-						else -> it
-					}
-				}
-			)
+			BoardSpace(boardSpaceHeight, state)
+			OptionsRow(state)
 		}
 	}
 }
 
 @Composable
-fun OptionsRow(
-	height: Dp,
-	rows: Int,
-	updateRows: (Int) -> Unit,
-	cols: Int,
-	updateCols: (Int) -> Unit
-) {
+fun OptionsRow(state: BoardState) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.End,
 		modifier = Modifier.fillMaxWidth()
 	) {
+		val height = BoardState.OPTIONS_ROW_HEIGHT
+
 		Text("Rows:")
 		Spacer(modifier = Modifier.width(5.dp))
-		NumberInput(DpSize(100.dp, height), value = rows, onValueChange = updateRows)
+		NumberInput(DpSize(100.dp, height), value = state.boardRows, onValueChange = { state.updateRows(it) })
 		Spacer(modifier = Modifier.width(30.dp))
 		Text("Columns:")
 		Spacer(modifier = Modifier.width(5.dp))
-		NumberInput(DpSize(100.dp, height), value = cols, onValueChange = updateCols)
+		NumberInput(DpSize(100.dp, height), value = state.boardColumns, onValueChange = state::updateCols)
 	}
 }

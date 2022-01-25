@@ -2,7 +2,6 @@ package ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -11,12 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ui.state.BoardState
 
 @Composable
 fun BoardSpace(
 	height: Dp,
-	columns: Int = 6,
-	rows: Int = 5
+	state: BoardState
 ) {
 	BoxWithConstraints(
 		modifier = Modifier
@@ -27,19 +26,16 @@ fun BoardSpace(
 	) {
 		val width = this.maxWidth
 
-		val rowHeight = height / rows
+		val rowHeight = height / state.boardRows
 		val rowModifier = Modifier.height(rowHeight).fillMaxWidth()
-		val borderModifier = Modifier.border(1.dp, Color.Black).padding(1.dp)
-		val cellModifier = borderModifier.width(width / columns).height(rowHeight)
+		val cellModifier = Modifier.width(width / state.boardColumns).height(rowHeight)
 		Column {
-			for (row in 1..rows) {
+			for (row in 1..state.boardRows) {
 				key(row) {
 					Row(modifier = rowModifier) {
-						for (col in 1..columns) {
+						for (col in 1..state.boardColumns) {
 							key(col) {
-								Button(modifier = cellModifier, onClick = {}) {
-									Text("$row, $col")
-								}
+								Text("$row, $col", modifier = cellModifier)
 							}
 						}
 					}
