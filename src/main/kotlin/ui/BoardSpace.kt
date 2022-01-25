@@ -24,11 +24,10 @@ fun BoardSpace(
 			.height(height),
 		contentAlignment = Alignment.Center
 	) {
-		val width = this.maxWidth
-
 		val rowHeight = height / state.boardRows
 		val rowModifier = Modifier.height(rowHeight).fillMaxWidth()
-		val cellModifier = Modifier.width(width / state.boardColumns).height(rowHeight)
+		val cellModifier = Modifier.width(maxWidth / state.boardColumns).height(rowHeight)
+
 		Column {
 			for (row in 1..state.boardRows) {
 				key(row) {
