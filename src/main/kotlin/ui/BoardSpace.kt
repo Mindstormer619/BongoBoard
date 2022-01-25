@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,16 +27,20 @@ fun BoardSpace(
 	) {
 		val width = this.maxWidth
 
-		val borderModifier = Modifier.border(1.dp, Color.Black).padding(1.dp)
 		val rowHeight = height / rows
 		val rowModifier = Modifier.height(rowHeight).fillMaxWidth()
+		val borderModifier = Modifier.border(1.dp, Color.Black).padding(1.dp)
 		val cellModifier = borderModifier.width(width / columns).height(rowHeight)
 		Column {
 			for (row in 1..rows) {
-				Row(modifier = rowModifier) {
-					for (col in 1..columns) {
-						Button(modifier = cellModifier, onClick = {}) {
-							Text("Example")
+				key(row) {
+					Row(modifier = rowModifier) {
+						for (col in 1..columns) {
+							key(col) {
+								Button(modifier = cellModifier, onClick = {}) {
+									Text("$row, $col")
+								}
+							}
 						}
 					}
 				}
