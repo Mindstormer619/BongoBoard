@@ -4,6 +4,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import javafx.embed.swing.JFXPanel
 import ui.BongoBoard
 
 @Composable
@@ -15,6 +16,7 @@ fun App() {
 }
 
 fun main() = application {
+	JFXPanel()
 	Window(
 		onCloseRequest = ::exitApplication,
 		title = "BongoBoard!"
