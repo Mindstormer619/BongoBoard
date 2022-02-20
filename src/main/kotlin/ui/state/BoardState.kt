@@ -2,6 +2,8 @@ package ui.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
+import javafx.scene.media.AudioClip
+import java.nio.file.Paths
 
 @Composable
 fun rememberBoardState() = remember { BoardState() }
@@ -11,6 +13,8 @@ class BoardState {
 		private set
 	var boardColumns: Int by mutableStateOf(6)
 		private set
+
+	val media = AudioClip(Paths.get("src/main/resources/t_e.wav").toUri().toString())
 
 	companion object {
 		const val MAX_ROWS = 6

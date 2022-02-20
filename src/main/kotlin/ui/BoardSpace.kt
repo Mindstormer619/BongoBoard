@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import javafx.scene.media.Media
-import javafx.scene.media.MediaPlayer
 import ui.state.BoardState
-import java.nio.file.Paths
 
 @Composable
 fun BoardSpace(
@@ -40,13 +37,11 @@ fun BoardSpace(
 							key(col) {
 								Button(
 									onClick = {
-										val media = Media(Paths.get("src/main/resources/t_e.wav").toUri().toString())
-										val player = MediaPlayer(media)
-										player.play()
+										state.media.play()
 									},
 									modifier = cellModifier
 								) {
-									Text("Click")
+									Text("Click Me")
 								}
 							}
 						}
