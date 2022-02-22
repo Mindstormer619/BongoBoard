@@ -16,6 +16,8 @@ class BoardState {
 
 	val media = AudioClip(Paths.get("src/main/resources/t_e.wav").toUri().toString())
 
+	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
+
 	companion object {
 		const val MAX_ROWS = 6
 		const val MAX_COLS = 10
@@ -37,4 +39,14 @@ class BoardState {
 			else -> cols
 		}
 	}
+
+	fun toggleEdit() {
+		mode =
+			if (mode == BoardMode.PLAY) BoardMode.EDIT
+			else BoardMode.PLAY
+	}
+
+	fun isEditMode() = mode == BoardMode.EDIT
 }
+
+private enum class BoardMode { PLAY, EDIT }

@@ -2,9 +2,12 @@
 
 package ui.components
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,11 +46,10 @@ private fun NumberIncrementButton(
 	isPlus: Boolean = false
 ) {
 	val fontSize = TextUnit(dimension.value / 4, TextUnitType.Sp)
-	OutlinedButton(
+	CircularButton(
 		onClick = clickAction,
-		modifier = Modifier.size(dimension),
-		shape = CircleShape,
-		colors = ButtonDefaults.outlinedButtonColors(backgroundColor = if (isPlus) Color.Green else Color.Red)
+		size = dimension,
+		color = if (isPlus) Color.Green else Color.Red
 	) {
 		Text(if (isPlus) "➕" else "➖", fontSize = fontSize)
 	}
