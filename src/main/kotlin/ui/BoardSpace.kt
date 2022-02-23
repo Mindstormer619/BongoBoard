@@ -1,6 +1,7 @@
 package ui
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -35,13 +36,31 @@ fun BoardSpace(
 					Row(modifier = rowModifier) {
 						for (col in 1..state.boardColumns) {
 							key(col) {
-								Button(
-									onClick = {
-										state.media.play()
-									},
+								Box(
 									modifier = cellModifier
+										.border(1.dp, Color.Black)
+										.clickable(enabled = state.isEditMode()) {
+											if ((row to col) in state.buttons) {
+												state.buttons -= (row to col)
+											} else {
+												state.buttons += (row to col)
+											}
+										}
 								) {
-									Text("Click Me")
+									if ((row to col) in state.buttons) {
+										Button(
+											modifier = cellModifier,
+											onClick = {
+												if (state.isEditMode()) {
+													state.buttons -= (row to col)
+												} else {
+													state.media.play()
+												}
+											}
+										) {
+											Text("E")
+										}
+									}
 								}
 							}
 						}

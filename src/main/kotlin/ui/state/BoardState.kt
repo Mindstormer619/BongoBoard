@@ -18,6 +18,8 @@ class BoardState {
 
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
+	var buttons: Set<Pair<Int, Int>> by mutableStateOf(setOf())
+
 	companion object {
 		const val MAX_ROWS = 6
 		const val MAX_COLS = 10

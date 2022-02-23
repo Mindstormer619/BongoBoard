@@ -36,12 +36,15 @@ fun OptionsRow(state: BoardState) {
 	) {
 		val height = BoardState.OPTIONS_ROW_HEIGHT
 
-		CircularButton(
-			onClick = {state.toggleEdit()},
-			size = height,
-			color = Color.Gray
-		) {
-			Text(if (state.isEditMode()) "💾" else "✏")
+		Row(verticalAlignment = Alignment.CenterVertically) {
+			Spacer(modifier = Modifier.width(5.dp))
+			CircularButton(
+				onClick = { state.toggleEdit() },
+				size = height,
+				color = Color.Gray
+			) {
+				Text(if (state.isEditMode()) "💾" else "✏")
+			}
 		}
 
 		if (state.isEditMode()) {
@@ -53,6 +56,7 @@ fun OptionsRow(state: BoardState) {
 				Text("Columns:")
 				Spacer(modifier = Modifier.width(5.dp))
 				NumberInput(DpSize(100.dp, height), value = state.boardColumns, onValueChange = state::updateCols)
+				Spacer(modifier = Modifier.width(5.dp))
 			}
 		}
 	}
