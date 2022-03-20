@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -12,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import ui.state.BoardState
+import ui.state.ButtonState
 
 @Composable
 fun BoardSpace(
@@ -43,7 +46,7 @@ fun BoardSpace(
 											if ((row to col) in state.buttons) {
 												state.buttons -= (row to col)
 											} else {
-												state.buttons += (row to col)
+												state.buttons += ((row to col) to ButtonState("E", state.media))
 											}
 										}
 								) {
@@ -52,7 +55,7 @@ fun BoardSpace(
 											modifier = cellModifier,
 											onClick = {
 												if (state.isEditMode()) {
-													state.buttons -= (row to col)
+													state.buttonBeingEdited = (row to col)
 												} else {
 													state.media.play()
 												}
@@ -68,6 +71,27 @@ fun BoardSpace(
 				}
 			}
 		}
+		if (state.buttonBeingEdited != null) {
+			Dialog(onCloseRequest = { state.buttonBeingEdited = null }) {
+				Column(
+					modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+					horizontalAlignment = Alignment.CenterHorizontally,
+					verticalArrangement = Arrangement.SpaceEvenly
+				){
+					val buttonIndex = state.buttonBeingEdited ?: return@Column
+					Text(state.buttons.getValue(buttonIndex).name)
 
+					Button(
+						onClick = {
+							state.buttons -= buttonIndex
+							state.buttonBeingEdited = null
+						},
+						colors = ButtonDefaults.buttonColors(Color.Red)
+					) {
+						Text("REMOVE")
+					}
+				}
+			}
+		}
 	}
 }

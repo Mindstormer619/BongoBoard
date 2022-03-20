@@ -18,7 +18,9 @@ class BoardState {
 
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
-	var buttons: Set<Pair<Int, Int>> by mutableStateOf(setOf())
+	val buttons: MutableMap<Pair<Int, Int>, ButtonState> = mutableStateMapOf()
+
+	var buttonBeingEdited: Pair<Int, Int>? by mutableStateOf(null)
 
 	companion object {
 		const val MAX_ROWS = 6
@@ -50,5 +52,10 @@ class BoardState {
 
 	fun isEditMode() = mode == BoardMode.EDIT
 }
+
+data class ButtonState(
+	val name: String,
+	val media: AudioClip
+)
 
 private enum class BoardMode { PLAY, EDIT }
