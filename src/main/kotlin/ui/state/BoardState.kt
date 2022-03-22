@@ -21,6 +21,7 @@ class BoardState {
 	val buttons: MutableMap<Pair<Int, Int>, ButtonState> = mutableStateMapOf()
 
 	var buttonBeingEdited: Pair<Int, Int>? by mutableStateOf(null)
+	var buttonNameBeingEdited: String by mutableStateOf("")
 
 	companion object {
 		const val MAX_ROWS = 6

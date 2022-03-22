@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
@@ -61,7 +62,7 @@ fun BoardSpace(
 												}
 											}
 										) {
-											Text("E")
+											Text(state.buttons.getValue(row to col).name)
 										}
 									}
 								}
@@ -77,9 +78,23 @@ fun BoardSpace(
 					modifier = Modifier.fillMaxWidth().fillMaxHeight(),
 					horizontalAlignment = Alignment.CenterHorizontally,
 					verticalArrangement = Arrangement.SpaceEvenly
-				){
+				) {
 					val buttonIndex = state.buttonBeingEdited ?: return@Column
 					Text(state.buttons.getValue(buttonIndex).name)
+
+					Row {
+						TextField(
+							value = state.buttonNameBeingEdited,
+							onValueChange = { state.buttonNameBeingEdited = it },
+							singleLine = true
+						)
+						Button(onClick = {
+							state.buttons[buttonIndex] = ButtonState(state.buttonNameBeingEdited, state.media)
+						}) {
+							Text("✅")
+						}
+					}
+
 
 					Button(
 						onClick = {
