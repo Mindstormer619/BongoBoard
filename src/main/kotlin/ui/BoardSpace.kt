@@ -8,7 +8,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,79 +33,99 @@ fun BoardSpace(
 		val rowHeight = maxHeight / state.boardRows
 		val rowModifier = Modifier.height(rowHeight).fillMaxWidth()
 		val cellModifier = Modifier.width(maxWidth / state.boardColumns).height(rowHeight)
-
 		Column {
 			for (row in 1..state.boardRows) {
-				key(row) {
-					Row(modifier = rowModifier) {
-						for (col in 1..state.boardColumns) {
-							key(col) {
-								Box(
-									modifier = cellModifier
-										.border(1.dp, Color.Black)
-										.clickable(enabled = state.isEditMode()) {
-											if ((row to col) in state.buttons) {
-												state.buttons -= (row to col)
-											} else {
-												state.buttons += ((row to col) to ButtonState("E", state.media))
-											}
-										}
-								) {
-									if ((row to col) in state.buttons) {
-										Button(
-											modifier = cellModifier,
-											onClick = {
-												if (state.isEditMode()) {
-													state.buttonBeingEdited = (row to col)
-												} else {
-													state.media.play()
-												}
-											}
-										) {
-											Text(state.buttons.getValue(row to col).name)
-										}
-									}
-								}
-							}
-						}
+				Row(modifier = rowModifier) {
+					for (col in 1..state.boardColumns) {
+						Cell(cellModifier, state, row, col)
 					}
 				}
 			}
 		}
 		if (state.buttonBeingEdited != null) {
-			Dialog(onCloseRequest = { state.buttonBeingEdited = null }) {
-				Column(
-					modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-					horizontalAlignment = Alignment.CenterHorizontally,
-					verticalArrangement = Arrangement.SpaceEvenly
-				) {
-					val buttonIndex = state.buttonBeingEdited ?: return@Column
-					Text(state.buttons.getValue(buttonIndex).name)
+			EditButtonDialog(state)
+		}
+	}
+}
 
-					Row {
-						TextField(
-							value = state.buttonNameBeingEdited,
-							onValueChange = { state.buttonNameBeingEdited = it },
-							singleLine = true
-						)
-						Button(onClick = {
-							state.buttons[buttonIndex] = ButtonState(state.buttonNameBeingEdited, state.media)
-						}) {
-							Text("✅")
-						}
-					}
+@Composable
+fun EditButtonDialog(state: BoardState) {
+	Dialog(onCloseRequest = { state.buttonBeingEdited = null }) {
+		Column(
+			modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.SpaceEvenly
+		) {
+			val buttonIndex = state.buttonBeingEdited ?: return@Column
+			if (!state.buttons.containsKey(buttonIndex)) state.buttons[buttonIndex] = ButtonState("", null)
+			val button = state.buttons.getValue(buttonIndex)
+			Text(button.name)
+			LaunchedEffect(button.name) {
+				state.buttonNameBeingEdited = button.name
+				state.mediaPathBeingEdited = button.media?.path ?: ""
+			}
+
+			TextField(
+				value = state.buttonNameBeingEdited,
+				onValueChange = { state.buttonNameBeingEdited = it },
+				singleLine = true
+			)
+			TextField(
+				value = state.mediaPathBeingEdited,
+				onValueChange = { state.mediaPathBeingEdited = it },
+				singleLine = true
+			)
+			Button(onClick = {
+				state.buttons[buttonIndex] = ButtonState(state.buttonNameBeingEdited, state.mediaPathBeingEdited)
+				state.buttonBeingEdited = null
+			}) {
+				Text("✅")
+			}
 
 
-					Button(
-						onClick = {
-							state.buttons -= buttonIndex
-							state.buttonBeingEdited = null
-						},
-						colors = ButtonDefaults.buttonColors(Color.Red)
-					) {
-						Text("REMOVE")
+			Button(
+				onClick = {
+					state.buttons -= buttonIndex
+					state.buttonBeingEdited = null
+				},
+				colors = ButtonDefaults.buttonColors(Color.Red)
+			) {
+				Text("REMOVE")
+			}
+		}
+	}
+}
+
+@Composable
+fun Cell(
+	modifier: Modifier,
+	state: BoardState,
+	row: Int,
+	col: Int
+) {
+	Box(
+		modifier = modifier
+			.border(1.dp, Color.Black)
+			.clickable(enabled = state.isEditMode()) {
+				if ((row to col) in state.buttons) {
+					state.buttons -= (row to col)
+				} else {
+					state.buttonBeingEdited = row to col
+				}
+			}
+	) {
+		if ((row to col) in state.buttons) {
+			Button(
+				modifier = Modifier.matchParentSize(),
+				onClick = {
+					if (state.isEditMode()) {
+						state.buttonBeingEdited = row to col
+					} else {
+						state.buttons.getValue(row to col).media?.play()
 					}
 				}
+			) {
+				Text(state.buttons.getValue(row to col).name)
 			}
 		}
 	}

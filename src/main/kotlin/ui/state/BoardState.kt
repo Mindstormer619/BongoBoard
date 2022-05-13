@@ -5,23 +5,29 @@ import androidx.compose.ui.unit.dp
 import javafx.scene.media.AudioClip
 import java.nio.file.Paths
 
+fun getAudio(path: String) = AudioClip(Paths.get(path).toUri().toString())
+
 @Composable
 fun rememberBoardState() = remember { BoardState() }
 
 class BoardState {
-	var boardRows: Int by mutableStateOf(5)
-		private set
-	var boardColumns: Int by mutableStateOf(6)
-		private set
 
-	val media = AudioClip(Paths.get("src/main/resources/t_e.wav").toUri().toString())
-
+	var boardRows: Int by mutableStateOf(2)
+		private set
+	var boardColumns: Int by mutableStateOf(2)
+		private set
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
-	val buttons: MutableMap<Pair<Int, Int>, ButtonState> = mutableStateMapOf()
+	val buttons: MutableMap<GridPosition, ButtonState> = mutableStateMapOf(
+		(1 to 1) to ButtonState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav"),
+		(1 to 2) to ButtonState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3"),
+		(2 to 1) to ButtonState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav"),
+		(2 to 2) to ButtonState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav")
+	)
 
-	var buttonBeingEdited: Pair<Int, Int>? by mutableStateOf(null)
+	var buttonBeingEdited: GridPosition? by mutableStateOf(null)
 	var buttonNameBeingEdited: String by mutableStateOf("")
+	var mediaPathBeingEdited: String by mutableStateOf("")
 
 	companion object {
 		const val MAX_ROWS = 6
@@ -56,7 +62,18 @@ class BoardState {
 
 data class ButtonState(
 	val name: String,
-	val media: AudioClip
-)
+	val media: Audio?
+) {
+	constructor(name: String, mediaPath: String): this(name, Audio(mediaPath))
+}
+
+class Audio(
+	val path: String
+) {
+	val media = getAudio(path)
+	fun play() = media.play()
+}
 
 private enum class BoardMode { PLAY, EDIT }
+
+private typealias GridPosition = Pair<Int, Int>
