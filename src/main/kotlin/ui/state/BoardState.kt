@@ -18,14 +18,14 @@ class BoardState {
 		private set
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
-	val buttons: MutableMap<GridPosition, ButtonState> = mutableStateMapOf(
-		(1 to 1) to ButtonState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav"),
-		(1 to 2) to ButtonState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3"),
-		(2 to 1) to ButtonState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav"),
-		(2 to 2) to ButtonState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav")
+	val pads: MutableMap<GridPosition, PadState> = mutableStateMapOf(
+		(1 to 1) to PadState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav"),
+		(1 to 2) to PadState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3"),
+		(2 to 1) to PadState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav"),
+		(2 to 2) to PadState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav")
 	)
 
-	var buttonBeingEdited: GridPosition? by mutableStateOf(null)
+	var padBeingEdited: Pair<GridPosition, PadState>? by mutableStateOf(null)
 	var buttonNameBeingEdited: String by mutableStateOf("")
 	var mediaPathBeingEdited: String by mutableStateOf("")
 
@@ -60,7 +60,7 @@ class BoardState {
 	fun isEditMode() = mode == BoardMode.EDIT
 }
 
-data class ButtonState(
+class PadState(
 	val name: String,
 	val media: Audio?
 ) {
@@ -70,10 +70,10 @@ data class ButtonState(
 class Audio(
 	val path: String
 ) {
-	val media = getAudio(path)
+	private val media = getAudio(path)
 	fun play() = media.play()
 }
 
 private enum class BoardMode { PLAY, EDIT }
 
-private typealias GridPosition = Pair<Int, Int>
+typealias GridPosition = Pair<Int, Int>
