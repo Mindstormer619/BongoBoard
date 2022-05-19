@@ -12,7 +12,6 @@ import ui.components.blackBorder
 import ui.components.setHeightWithMaxWidth
 import ui.state.BoardState
 import ui.state.GridPosition
-import ui.state.PadState
 
 @Composable
 fun BoardSpace(
@@ -35,7 +34,7 @@ fun BoardSpace(
 				}
 			}
 		}
-		if (state.padBeingEdited != null) {
+		if (state.padPositionBeingEdited != null) {
 			EditPadDialog(state)
 		}
 	}
@@ -51,7 +50,7 @@ fun Cell(
 	val coordinates = row to col
 	Box(
 		modifier = modifier.blackBorder()
-			.clickable(enabled = state.isEditMode()) { addNewPad(coordinates, state) }
+			.clickable(enabled = state.isEditMode()) { state.padPositionBeingEdited = coordinates }
 	) {
 		if (coordinates in state.pads) {
 			Pad(state, coordinates)
@@ -65,22 +64,12 @@ private fun BoxScope.Pad(state: BoardState, coordinates: GridPosition) {
 		modifier = Modifier.matchParentSize(),
 		onClick = {
 			if (state.isEditMode()) {
-				state.padBeingEdited = coordinates to state.pads.getValue(coordinates)
+				state.padPositionBeingEdited = coordinates
 			} else {
-				state.pads.getValue(coordinates).media?.play()
+				state.pads.getValue(coordinates).media.play()
 			}
 		}
 	) {
 		Text(state.pads.getValue(coordinates).name)
 	}
-}
-
-private fun addNewPad(coordinates: GridPosition, state: BoardState) {
-	state.padBeingEdited = createNewPadAt(coordinates, state)
-}
-
-private fun createNewPadAt(coordinates: GridPosition, state: BoardState): Pair<GridPosition, PadState> {
-	val newPad = PadState("", null)
-	state.pads[coordinates] = newPad
-	return coordinates to newPad
 }
