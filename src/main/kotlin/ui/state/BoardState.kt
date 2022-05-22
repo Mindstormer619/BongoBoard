@@ -18,16 +18,15 @@ class BoardState {
 		private set
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
-	val pads: MutableMap<GridPosition, PadState> = mutableStateMapOf(
+	private val _pads = mutableStateMapOf(
 		(1 to 1) to PadState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav", (1 to 1)),
 		(1 to 2) to PadState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3", (1 to 2)),
 		(2 to 1) to PadState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav", (2 to 1)),
 		(2 to 2) to PadState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav", (2 to 2))
 	)
+	val pads: Map<GridPosition, PadState> = _pads
 
 	var padPositionBeingEdited: GridPosition? by mutableStateOf(null)
-	var buttonNameBeingEdited: String by mutableStateOf("")
-	var mediaPathBeingEdited: String by mutableStateOf("")
 
 	companion object {
 		const val MAX_ROWS = 6
@@ -58,9 +57,20 @@ class BoardState {
 	}
 
 	fun isEditMode() = mode == BoardMode.EDIT
+
 	fun getPadBeingEdited(): PadState? {
 		return this.pads[padPositionBeingEdited]
 	}
+	fun upsertPad(padState: PadState) {
+		_pads[padState.coordinates] = padState
+	}
+
+	fun removePad(padIndex: GridPosition) {
+		_pads -= padIndex
+	}
+
+	fun hasPadAt(coordinates: GridPosition) = coordinates in pads
+	fun activatePad(coordinates: GridPosition) = pads[coordinates]?.activate() ?: Unit
 
 	private enum class BoardMode { PLAY, EDIT }
 }
@@ -71,6 +81,9 @@ class PadState(
 	val coordinates: GridPosition
 ) {
 	constructor(name: String, mediaPath: String, coordinates: GridPosition): this(name, Audio(mediaPath), coordinates)
+	fun activate() {
+		media.play()
+	}
 }
 
 class Audio(
@@ -79,7 +92,5 @@ class Audio(
 	private val media = getAudio(path)
 	fun play() = media.play()
 }
-
-
 
 typealias GridPosition = Pair<Int, Int>

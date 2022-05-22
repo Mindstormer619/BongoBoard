@@ -7,8 +7,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,41 +26,42 @@ fun EditPadDialog(state: BoardState) {
 	}
 }
 
-@Composable private fun DialogBody(state: BoardState, padIndex: GridPosition) {
+@Composable
+private fun DialogBody(state: BoardState, padIndex: GridPosition) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.SpaceEvenly
 	) {
 		val pad = state.getPadBeingEdited()
+		var buttonNameBeingEdited by remember { mutableStateOf(pad?.name ?: "") }
+		var mediaPathBeingEdited by remember { mutableStateOf(pad?.media?.path ?: "") }
 
-		Text(pad?.name ?: "")
-		LaunchedEffect(pad) {
-			state.buttonNameBeingEdited = pad?.name ?: ""
-			state.mediaPathBeingEdited = pad?.media?.path ?: ""
-		}
-
+		Text(pad?.name ?: "<NEW PAD>")
 		TextField(
-			value = state.buttonNameBeingEdited,
-			onValueChange = { state.buttonNameBeingEdited = it },
+			value = buttonNameBeingEdited,
+			onValueChange = { buttonNameBeingEdited = it },
 			singleLine = true
 		)
 		TextField(
-			value = state.mediaPathBeingEdited,
-			onValueChange = { state.mediaPathBeingEdited = it },
+			value = mediaPathBeingEdited,
+			onValueChange = { mediaPathBeingEdited = it },
 			singleLine = true
 		)
-		Button(onClick = {
-			state.pads[padIndex] = PadState(state.buttonNameBeingEdited, state.mediaPathBeingEdited, padIndex)
-			state.padPositionBeingEdited = null
-		}) {
+		Button(
+			onClick = {
+				state.upsertPad(PadState(buttonNameBeingEdited, mediaPathBeingEdited, padIndex))
+				state.padPositionBeingEdited = null
+			},
+			colors = ButtonDefaults.buttonColors(Color.Green)
+		) {
 			Text("✅")
 		}
 
 
 		Button(
 			onClick = {
-				state.pads -= padIndex
+				state.removePad(padIndex)
 				state.padPositionBeingEdited = null
 			},
 			colors = ButtonDefaults.buttonColors(Color.Red)

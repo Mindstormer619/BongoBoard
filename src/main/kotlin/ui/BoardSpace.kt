@@ -52,7 +52,7 @@ fun Cell(
 		modifier = modifier.blackBorder()
 			.clickable(enabled = state.isEditMode()) { state.padPositionBeingEdited = coordinates }
 	) {
-		if (coordinates in state.pads) {
+		if (state.hasPadAt(coordinates)) {
 			Pad(state, coordinates)
 		}
 	}
@@ -66,7 +66,7 @@ private fun BoxScope.Pad(state: BoardState, coordinates: GridPosition) {
 			if (state.isEditMode()) {
 				state.padPositionBeingEdited = coordinates
 			} else {
-				state.pads.getValue(coordinates).media.play()
+				state.activatePad(coordinates)
 			}
 		}
 	) {
