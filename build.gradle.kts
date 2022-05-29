@@ -10,7 +10,7 @@ plugins {
 
 javafx {
     version = "17"
-    modules = listOf("javafx.media", "javafx.swing")
+    modules = listOf("javafx.media")
 }
 
 group = "me.minds"
@@ -22,9 +22,13 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
+val mockkVersion: String by project
+
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
     implementation(compose.desktop.currentOs)
+    testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
 tasks.test {
