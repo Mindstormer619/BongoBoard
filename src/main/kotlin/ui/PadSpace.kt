@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import ui.components.blackBorder
 import ui.components.setHeightWithMaxWidth
@@ -14,7 +15,7 @@ import ui.state.BoardState
 import ui.state.GridPosition
 
 @Composable
-fun BoardSpace(
+fun PadSpace(
 	height: Dp,
 	state: BoardState
 ) {
@@ -50,6 +51,7 @@ fun Cell(
 	val coordinates = row to col
 	Box(
 		modifier = modifier.blackBorder()
+			.testTag("Cell:$coordinates")
 			.clickable(enabled = state.isEditMode()) { state.padPositionBeingEdited = coordinates }
 	) {
 		if (state.hasPadAt(coordinates)) {

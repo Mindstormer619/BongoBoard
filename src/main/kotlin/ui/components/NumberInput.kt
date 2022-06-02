@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 
 @Composable
-fun NumberInput(size: DpSize, value: Int = 0, onValueChange: (Int) -> Unit = {}) {
-	val heightMod = Modifier.height(size.height)
+fun NumberInput(size: DpSize, value: Int = 0, onValueChange: (Int) -> Unit = {}, modifier: Modifier) {
+	val heightMod = modifier.height(size.height)
 	Row(
 		modifier = heightMod,
 		verticalAlignment = Alignment.CenterVertically

@@ -4,8 +4,12 @@ import App
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
+import ui.state.Audio
+import ui.state.PadState
+import ui.state.rememberBoardState
 
 class BoardInitializationTest {
 	@get:Rule
@@ -40,14 +44,24 @@ class BoardInitializationTest {
 	}
 
 	@Test
-	fun `given board in play mode, clicking a pad plays a sound`() {
+	fun `given board in play mode, clicking a pad activates it`() {
 		ui(compose) {
-			setContent { App() }
+			val gridPosition = 1 to 1
+			val mockPad = spyk(PadState("E", mockk<Audio>(), gridPosition))
+			every { mockPad.activate() } just runs
+
+			setContent {
+				BongoBoard(
+					rememberBoardState(
+						mapOf(gridPosition to mockPad)
+					)
+				)
+			}
 
 			onNodeWithText("E").performClick()
 			awaitIdle()
 
-			TODO("Make it not actually play a sound.")
+			verify(exactly = 1) { mockPad.activate() }
 		}
 	}
 }

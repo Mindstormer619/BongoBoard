@@ -8,22 +8,33 @@ import java.nio.file.Paths
 fun getAudio(path: String) = AudioClip(Paths.get(path).toUri().toString())
 
 @Composable
-fun rememberBoardState() = remember { BoardState() }
+fun rememberBoardState(pads: Map<GridPosition, PadState>? = null) = remember {
+	if (pads == null) BoardState()
+	else BoardState(pads)
+}
 
-class BoardState {
+class BoardState(
+	pads: Map<GridPosition, PadState>,
+	boardRows: Int = 2,
+	boardColumns: Int = 2
+) {
 
-	var boardRows: Int by mutableStateOf(2)
+	constructor() : this(
+		pads = mapOf(
+			(1 to 1) to PadState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav", (1 to 1)),
+			(1 to 2) to PadState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3", (1 to 2)),
+			(2 to 1) to PadState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav", (2 to 1)),
+			(2 to 2) to PadState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav", (2 to 2))
+		)
+	)
+
+	var boardRows: Int by mutableStateOf(boardRows)
 		private set
-	var boardColumns: Int by mutableStateOf(2)
+	var boardColumns: Int by mutableStateOf(boardColumns)
 		private set
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
-	private val _pads = mutableStateMapOf(
-		(1 to 1) to PadState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav", (1 to 1)),
-		(1 to 2) to PadState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3", (1 to 2)),
-		(2 to 1) to PadState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav", (2 to 1)),
-		(2 to 2) to PadState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav", (2 to 2))
-	)
+	private val _pads = pads.map { it.key to it.value }.toMutableStateMap()
 	val pads: Map<GridPosition, PadState> = _pads
 
 	var padPositionBeingEdited: GridPosition? by mutableStateOf(null)
@@ -61,6 +72,7 @@ class BoardState {
 	fun getPadBeingEdited(): PadState? {
 		return this.pads[padPositionBeingEdited]
 	}
+
 	fun upsertPad(padState: PadState) {
 		_pads[padState.coordinates] = padState
 	}
@@ -80,7 +92,8 @@ class PadState(
 	val media: Audio,
 	val coordinates: GridPosition
 ) {
-	constructor(name: String, mediaPath: String, coordinates: GridPosition): this(name, Audio(mediaPath), coordinates)
+	constructor(name: String, mediaPath: String, coordinates: GridPosition) : this(name, Audio(mediaPath), coordinates)
+
 	fun activate() {
 		media.play()
 	}
