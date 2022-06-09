@@ -7,9 +7,9 @@ import androidx.compose.ui.test.performClick
 import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
-import ui.state.Audio
-import ui.state.PadState
-import ui.state.rememberBoardState
+import state.Audio
+import state.PadState
+import state.rememberBoardState
 
 class BoardInitializationTest {
 	@get:Rule

@@ -11,10 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.window.Dialog
-import ui.state.BoardState
-import ui.state.GridPosition
-import ui.state.PadState
+import state.BoardState
+import state.GridPosition
+import state.PadState
 
 @Composable
 fun EditPadDialog(state: BoardState) {
@@ -27,7 +28,7 @@ fun EditPadDialog(state: BoardState) {
 }
 
 @Composable
-private fun DialogBody(state: BoardState, padIndex: GridPosition) {
+fun DialogBody(state: BoardState, padIndex: GridPosition) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,12 +42,14 @@ private fun DialogBody(state: BoardState, padIndex: GridPosition) {
 		TextField(
 			value = buttonNameBeingEdited,
 			onValueChange = { buttonNameBeingEdited = it },
-			singleLine = true
+			singleLine = true,
+			modifier = Modifier.testTag("ButtonName")
 		)
 		TextField(
 			value = mediaPathBeingEdited,
 			onValueChange = { mediaPathBeingEdited = it },
-			singleLine = true
+			singleLine = true,
+			modifier = Modifier.testTag("MediaPath")
 		)
 		Button(
 			onClick = {

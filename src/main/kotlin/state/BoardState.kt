@@ -1,4 +1,4 @@
-package ui.state
+package state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp

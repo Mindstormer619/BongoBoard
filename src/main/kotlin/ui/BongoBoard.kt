@@ -11,10 +11,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import state.BoardState
+import state.rememberBoardState
 import ui.components.CircularButton
 import ui.components.NumberInput
-import ui.state.BoardState
-import ui.state.rememberBoardState
 
 @Composable
 @Preview

@@ -9,10 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
+import state.BoardState
+import state.GridPosition
 import ui.components.blackBorder
 import ui.components.setHeightWithMaxWidth
-import ui.state.BoardState
-import ui.state.GridPosition
 
 @Composable
 fun PadSpace(
