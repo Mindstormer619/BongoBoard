@@ -71,7 +71,7 @@ class BoardEditModeTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test @Ignore("https://github.com/JetBrains/compose-jb/issues/2107")
 	fun `given board in edit mode, clicking blank space opens new pad editor`() {
 		ui(compose) {
 			setContent {

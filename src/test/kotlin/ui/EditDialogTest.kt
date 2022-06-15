@@ -55,7 +55,7 @@ class EditDialogTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test @Ignore("https://github.com/JetBrains/compose-jb/issues/2107")
 	fun `given new cell in edit, updating information and saving adds to state`() {
 		ui(compose) {
 			val gridPosition = 3 to 1

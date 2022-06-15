@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.6.10"
     id("org.jetbrains.compose") version "1.1.1"
     id("org.openjfx.javafxplugin") version "0.0.10"
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 javafx {
@@ -29,6 +30,7 @@ dependencies {
     testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
     implementation(compose.desktop.currentOs)
     testImplementation("io.mockk:mockk:$mockkVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 }
 
 tasks.test {
@@ -37,6 +39,7 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
 
 compose.desktop {
