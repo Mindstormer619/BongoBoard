@@ -28,7 +28,7 @@ class StatePersistenceTest {
 			launch {
 				board.rows.collectIndexed { i, rowCount ->
 					assertEquals(rowCounts[i], rowCount)
-					if (i == rowCounts.lastIndex) cancel() // Cancel the collector
+					if (i == rowCounts.lastIndex) terminateCollector()
 				}
 			}
 		}
