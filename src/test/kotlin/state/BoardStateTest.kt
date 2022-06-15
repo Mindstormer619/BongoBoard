@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class StatePersistenceTest {
+class BoardStateTest {
 
 	@Test
 	fun `given a board, updating row count notifies new state`() {
