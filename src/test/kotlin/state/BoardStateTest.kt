@@ -62,7 +62,7 @@ class BoardStateTest {
 		runBlockingTest {
 			val board = Board()
 			launch {
-				board.addPad(1 to 1, PadState("Bloo", fakeAudio, 1 to 1))
+				board.addPad(1 to 1, Pad("Bloo", fakeAudio, 1 to 1))
 			}
 			launch {
 				board.pads.collect {
@@ -81,7 +81,7 @@ class BoardStateTest {
 
 		runBlockingTest {
 			val board = Board()
-			board.addPad(1 to 1, PadState("Bloo", fakeAudio, 1 to 1))
+			board.addPad(1 to 1, Pad("Bloo", fakeAudio, 1 to 1))
 			assertTrue("Before we remove it, board has the pad") {
 				board.pads.first().containsKey(1 to 1)
 			}

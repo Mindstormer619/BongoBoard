@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.window.Dialog
 import state.BoardState
 import state.GridPosition
-import state.PadState
+import state.Pad
 
 @Composable
 fun EditPadDialog(state: BoardState) {
@@ -53,7 +53,7 @@ fun DialogBody(state: BoardState, padIndex: GridPosition) {
 		)
 		Button(
 			onClick = {
-				state.upsertPad(PadState(buttonNameBeingEdited, mediaPathBeingEdited, padIndex))
+				state.upsertPad(Pad(buttonNameBeingEdited, mediaPathBeingEdited, padIndex))
 				state.padPositionBeingEdited = null
 			},
 			colors = ButtonDefaults.buttonColors(Color.Green)

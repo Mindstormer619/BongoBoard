@@ -2,29 +2,25 @@ package state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
-import javafx.scene.media.AudioClip
-import java.nio.file.Paths
-
-fun getAudio(path: String) = AudioClip(Paths.get(path).toUri().toString())
 
 @Composable
-fun rememberBoardState(pads: Map<GridPosition, PadState>? = null) = remember {
+fun rememberBoardState(pads: Map<GridPosition, Pad>? = null) = remember {
 	if (pads == null) BoardState()
 	else BoardState(pads)
 }
 
 class BoardState(
-	pads: Map<GridPosition, PadState>,
+	pads: Map<GridPosition, Pad>,
 	boardRows: Int = 2,
 	boardColumns: Int = 2
 ) {
 
 	constructor() : this(
 		pads = mapOf(
-			(1 to 1) to PadState("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav", (1 to 1)),
-			(1 to 2) to PadState("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3", (1 to 2)),
-			(2 to 1) to PadState("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav", (2 to 1)),
-			(2 to 2) to PadState("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav", (2 to 2))
+			(1 to 1) to Pad("E", "D:\\Workspace\\Misc\\Soundboard\\e.wav", (1 to 1)),
+			(1 to 2) to Pad("50 Ten Hull", "D:\\Workspace\\Misc\\Soundboard\\fiftyTenHull.mp3", (1 to 2)),
+			(2 to 1) to Pad("Oof", "D:\\Workspace\\Misc\\Soundboard\\oof.wav", (2 to 1)),
+			(2 to 2) to Pad("🎉", "D:\\Workspace\\Misc\\Soundboard\\tadaah.wav", (2 to 2))
 		)
 	)
 
@@ -35,7 +31,7 @@ class BoardState(
 	private var mode: BoardMode by mutableStateOf(BoardMode.PLAY)
 
 	private val _pads = pads.map { it.key to it.value }.toMutableStateMap()
-	val pads: Map<GridPosition, PadState> = _pads
+	val pads: Map<GridPosition, Pad> = _pads
 
 	var padPositionBeingEdited: GridPosition? by mutableStateOf(null)
 
@@ -69,12 +65,12 @@ class BoardState(
 
 	fun isEditMode() = mode == BoardMode.EDIT
 
-	fun getPadBeingEdited(): PadState? {
+	fun getPadBeingEdited(): Pad? {
 		return this.pads[padPositionBeingEdited]
 	}
 
-	fun upsertPad(padState: PadState) {
-		_pads[padState.coordinates] = padState
+	fun upsertPad(pad: Pad) {
+		_pads[pad.coordinates] = pad
 	}
 
 	fun removePad(padIndex: GridPosition) {
@@ -87,23 +83,3 @@ class BoardState(
 	private enum class BoardMode { PLAY, EDIT }
 }
 
-class PadState(
-	val name: String,
-	val media: Audio,
-	val coordinates: GridPosition
-) {
-	constructor(name: String, mediaPath: String, coordinates: GridPosition) : this(name, Audio(mediaPath), coordinates)
-
-	fun activate() {
-		media.play()
-	}
-}
-
-class Audio(
-	val path: String
-) {
-	private val media = getAudio(path)
-	fun play() = media.play()
-}
-
-typealias GridPosition = Pair<Int, Int>
