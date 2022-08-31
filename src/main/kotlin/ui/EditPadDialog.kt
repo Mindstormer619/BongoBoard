@@ -36,7 +36,7 @@ fun DialogBody(state: BoardState, padIndex: GridPosition) {
 	) {
 		val pad = state.getPadBeingEdited()
 		var buttonNameBeingEdited by remember { mutableStateOf(pad?.name ?: "") }
-		var mediaPathBeingEdited by remember { mutableStateOf(pad?.media?.path ?: "") }
+		var mediaPathBeingEdited by remember { mutableStateOf(pad?.action?.path ?: "") }
 
 		Text(pad?.name ?: "<NEW PAD>")
 		TextField(

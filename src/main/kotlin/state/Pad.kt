@@ -8,13 +8,13 @@ import java.nio.file.Paths
 @Serializable
 class Pad(
 	val name: String,
-	val media: Audio,
+	val action: Audio, //TODO: Change this to a generic interface for other actions
 	val coordinates: GridPosition
 ) {
 	constructor(name: String, mediaPath: String, coordinates: GridPosition) : this(name, Audio(mediaPath), coordinates)
 
 	fun activate() {
-		media.play()
+		action.activate()
 	}
 }
 
@@ -25,7 +25,7 @@ class Audio(
 	@Transient
 	private val media = getAudio(path)
 
-	fun play() = media.play()
+	fun activate() = media.play()
 }
 
 fun getAudio(path: String) = AudioClip(Paths.get(path).toUri().toString())
