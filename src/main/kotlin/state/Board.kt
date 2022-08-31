@@ -1,9 +1,9 @@
 package state
 
 
-import MutableMapFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import utils.MutableMapFlow
 
 class Board(
 	rows: Int = 0,
@@ -26,11 +26,11 @@ class Board(
 		_cols.value = value
 	}
 
-	fun addPad(position: GridPosition, pad: Pad) {
-		_pads[position] = pad
+	fun addPad(pad: Pad) {
+		_pads[pad.coordinates] = pad
 	}
 
-	fun removePad(position: GridPosition) {
+	fun removePadAtPosition(position: GridPosition) {
 		_pads -= position
 	}
 }

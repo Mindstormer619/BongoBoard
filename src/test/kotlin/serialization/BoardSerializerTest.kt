@@ -1,8 +1,10 @@
 package serialization
 
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -21,20 +23,20 @@ import kotlin.test.assertEquals
 class BoardSerializerTest {
 	lateinit var board: Board
 	lateinit var serializer: BoardSerializer
-	lateinit var scope: TestCoroutineScope
+	private val scope = TestCoroutineScope()
 
 	private val serializedFile = File("src/test/resources/out.json")
+	private val mockAudio = mockk<Audio>(relaxed = true)
 
 	@Before
 	fun setUp() {
-		val mockAudio = mockk<Audio>(relaxed = true)
+		every { mockAudio.path } returns "src/test/resources/succ.mp3"
+
 		val pads = mutableMapOf(
 			(1 to 1) to Pad("A", mockAudio, 1 to 1),
 			(1 to 2) to Pad("B", mockAudio, 1 to 2)
 		)
 		board = Board(3, 4, pads)
-
-		scope = TestCoroutineScope()
 
 		serializer = BoardSerializer(board, serializedFile, scope)
 	}
@@ -61,13 +63,32 @@ class BoardSerializerTest {
 
 	@Test
 	fun `given board state updated, pad state is saved`() {
-		TODO("Not yet implemented")
+		runBlocking {
+			launch {
+				board.addPad(Pad("Test Pad", mockAudio, 1 to 3))
+				delay(100)
+
+				val jsonText = serializedFile.readText()
+				println(jsonText)
+				val boardState = Json.decodeFromString<BoardState>(jsonText)
+				assertEquals(3, boardState.pads.size)
+				assertEquals(1 to 3, boardState.pads[2].coordinates)
+			}
+		}
 	}
 
 	@Test
 	fun `when serializer is triggered, resulting string is as expected`() {
-		val serializedText = serializer.serializeToString()
-		val boardState = Json.decodeFromString<BoardState>(serializedText)
-		assertEquals(4, boardState.cols)
+		runBlocking {
+			val serializedText = serializer.serializeToString(
+				BoardState(
+					board.rows.first(),
+					board.cols.first(),
+					board.pads.first().values.toList()
+				)
+			)
+			val boardState = Json.decodeFromString<BoardState>(serializedText)
+			assertEquals(4, boardState.cols)
+		}
 	}
 }
