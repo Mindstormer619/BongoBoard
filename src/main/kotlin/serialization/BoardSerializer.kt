@@ -3,10 +3,9 @@ package serialization
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import state.Board
@@ -19,9 +18,7 @@ class BoardSerializer(
 	scope: CoroutineScope
 ) {
 	init {
-		board.rows.onEach { saveToFile() }.launchIn(scope)
-		board.cols.onEach { saveToFile() }.launchIn(scope)
-		board.pads.onEach { saveToFile() }.launchIn(scope)
+		board.subscribeToChanges(scope, ::saveToFile)
 	}
 
 	@Suppress("BlockingMethodInNonBlockingContext")
@@ -40,6 +37,17 @@ class BoardSerializer(
 	}
 
 	fun serializeToString(boardState: BoardState) = Json.encodeToString(boardState)
+
+	companion object {
+		fun deserializeToBoard(jsonString: String): Board {
+			val boardState = Json.decodeFromString<BoardState>(jsonString)
+			return Board(
+				rows = boardState.rows,
+				cols = boardState.cols,
+				pads = boardState.pads.associateByTo(mutableMapOf(), Pad::coordinates)
+			)
+		}
+	}
 }
 
 @Serializable

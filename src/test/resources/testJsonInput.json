@@ -1,0 +1,1 @@
+{"rows":5,"cols":6,"pads":[{"name":"A","action":{"path":"src/test/resources/succ.mp3"},"coordinates":{"first":1,"second":1}},{"name":"B","action":{"path":"src/test/resources/succ.mp3"},"coordinates":{"first":1,"second":2}},{"name":"Test Pad","action":{"path":"src/test/resources/succ.mp3"},"coordinates":{"first":1,"second":3}}]}

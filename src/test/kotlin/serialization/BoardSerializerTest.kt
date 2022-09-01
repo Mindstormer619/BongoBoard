@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.After
@@ -21,8 +22,8 @@ import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BoardSerializerTest {
-	lateinit var board: Board
-	lateinit var serializer: BoardSerializer
+	private lateinit var board: Board
+	private lateinit var serializer: BoardSerializer
 	private val scope = TestCoroutineScope()
 
 	private val serializedFile = File("src/test/resources/out.json")
@@ -52,7 +53,7 @@ class BoardSerializerTest {
 			launch {
 				board.updateRowCount(5)
 				board.updateColCount(6)
-				delay(500) // delay to let the file be written
+				delay(100) // delay to let the file be written
 
 				val boardState = Json.decodeFromString<BoardState>(serializedFile.readText())
 				assertEquals(6, boardState.cols)
@@ -79,7 +80,7 @@ class BoardSerializerTest {
 
 	@Test
 	fun `when serializer is triggered, resulting string is as expected`() {
-		runBlocking {
+		runBlockingTest {
 			val serializedText = serializer.serializeToString(
 				BoardState(
 					board.rows.first(),
@@ -89,6 +90,17 @@ class BoardSerializerTest {
 			)
 			val boardState = Json.decodeFromString<BoardState>(serializedText)
 			assertEquals(4, boardState.cols)
+		}
+	}
+
+	@Test
+	fun `when given a valid board string, we can deserialize it to the state of the board`() {
+		runBlockingTest {
+			val jsonString = File("src/test/resources/testJsonInput.json").readText()
+			val board = BoardSerializer.deserializeToBoard(jsonString)
+			assertEquals(5, board.rows.value)
+			assertEquals(6, board.cols.value)
+			assertEquals(3, board.pads.first().size)
 		}
 	}
 }

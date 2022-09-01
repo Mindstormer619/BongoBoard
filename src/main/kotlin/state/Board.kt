@@ -1,8 +1,11 @@
 package state
 
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import utils.MutableMapFlow
 
 class Board(
@@ -32,6 +35,12 @@ class Board(
 
 	fun removePadAtPosition(position: GridPosition) {
 		_pads -= position
+	}
+
+	fun subscribeToChanges(scope: CoroutineScope, action: suspend () -> Unit) {
+		rows.onEach { action() }.launchIn(scope)
+		cols.onEach { action() }.launchIn(scope)
+		pads.onEach { action() }.launchIn(scope)
 	}
 }
 typealias GridPosition = Pair<Int, Int>
