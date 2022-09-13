@@ -30,7 +30,7 @@ dependencies {
     testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
     implementation(compose.desktop.currentOs)
     testImplementation("io.mockk:mockk:$mockkVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 }
 
 tasks.test {
