@@ -1,3 +1,5 @@
+package utils
+
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -10,6 +12,10 @@ class MutableMapFlow<K, V>(
 		onBufferOverflow = BufferOverflow.DROP_OLDEST
 	)
 	val flow = _flow.asSharedFlow()
+
+	init {
+		_flow.tryEmit(map)
+	}
 
 	override fun put(key: K, value: V): V? {
 		val result = map.put(key, value)

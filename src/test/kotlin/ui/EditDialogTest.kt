@@ -72,7 +72,7 @@ class EditDialogTest {
 
 			val pad = boardState.pads.getValue(gridPosition)
 			assertEquals("trombone", pad.name)
-			assertTrue { pad.media.path.endsWith("sadTrombone.mp3") }
+			assertTrue { pad.action.path.endsWith("sadTrombone.mp3") }
 		}
 	}
 }

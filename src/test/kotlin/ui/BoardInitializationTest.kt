@@ -8,7 +8,7 @@ import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
 import state.Audio
-import state.PadState
+import state.Pad
 import state.rememberBoardState
 
 class BoardInitializationTest {
@@ -47,7 +47,7 @@ class BoardInitializationTest {
 	fun `given board in play mode, clicking a pad activates it`() {
 		ui(compose) {
 			val gridPosition = 1 to 1
-			val mockPad = spyk(PadState("E", mockk<Audio>(), gridPosition))
+			val mockPad = spyk(Pad("E", mockk<Audio>(), gridPosition))
 			every { mockPad.activate() } just runs
 
 			setContent {
