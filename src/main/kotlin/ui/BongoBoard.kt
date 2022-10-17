@@ -11,16 +11,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import state.BoardState
 import state.rememberBoardState
 import ui.components.CircularButton
 import ui.components.NumberInput
+import ui.state.BoardUi
+import ui.state.OPTIONS_ROW_HEIGHT
 
 @Composable
 @Preview
-fun BongoBoard(state: BoardState = rememberBoardState()) {
+fun BongoBoard(state: BoardUi = rememberBoardState()) {
 	BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-		val boardSpaceHeight = maxHeight - BoardState.OPTIONS_ROW_HEIGHT
+		val boardSpaceHeight = maxHeight - OPTIONS_ROW_HEIGHT
 
 		Column(modifier = Modifier.fillMaxSize()) {
 			PadSpace(boardSpaceHeight, state)
@@ -30,13 +31,13 @@ fun BongoBoard(state: BoardState = rememberBoardState()) {
 }
 
 @Composable
-fun OptionsRow(state: BoardState) {
+fun OptionsRow(state: BoardUi) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.SpaceBetween,
 		modifier = Modifier.fillMaxWidth()
 	) {
-		val height = BoardState.OPTIONS_ROW_HEIGHT
+		val height = OPTIONS_ROW_HEIGHT
 
 		Row(verticalAlignment = Alignment.CenterVertically) {
 			Spacer(modifier = Modifier.width(5.dp))
@@ -60,24 +61,24 @@ fun OptionsRow(state: BoardState) {
 	}
 }
 
-@Composable private fun RowCountEditor(height: Dp, state: BoardState) {
+@Composable private fun RowCountEditor(height: Dp, state: BoardUi) {
 	Text("Rows:")
 	Spacer(modifier = Modifier.width(5.dp))
 	NumberInput(
 		DpSize(100.dp, height),
-		value = state.boardRows,
-		onValueChange = { state.updateRows(it) },
+		value = state.rows,
+		onValueChange = state::updateRowCount,
 		modifier = Modifier.testTag("rowEditor")
 	)
 }
 
-@Composable private fun ColumnCountEditor(height: Dp, state: BoardState) {
+@Composable private fun ColumnCountEditor(height: Dp, state: BoardUi) {
 	Text("Columns:")
 	Spacer(modifier = Modifier.width(5.dp))
 	NumberInput(
 		DpSize(100.dp, height),
-		value = state.boardColumns,
-		onValueChange = state::updateCols,
+		value = state.cols,
+		onValueChange = state::updateColCount,
 		modifier = Modifier.testTag("columnEditor")
 	)
 }

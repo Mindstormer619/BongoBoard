@@ -13,14 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.window.Dialog
-import state.BoardState
 import state.GridPosition
 import state.Pad
+import ui.state.BoardUi
+import ui.state.padPositionBeingEdited
 
 @Composable
-fun EditPadDialog(state: BoardState) {
-	Dialog(onCloseRequest = { state.padPositionBeingEdited = null }) {
-		val padIndex = state.padPositionBeingEdited
+fun EditPadDialog(state: BoardUi) {
+	Dialog(onCloseRequest = { padPositionBeingEdited = null }) {
+		val padIndex = padPositionBeingEdited
 		if (padIndex != null) {
 			DialogBody(state, padIndex)
 		}
@@ -28,13 +29,13 @@ fun EditPadDialog(state: BoardState) {
 }
 
 @Composable
-fun DialogBody(state: BoardState, padIndex: GridPosition) {
+fun DialogBody(state: BoardUi, padIndex: GridPosition) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.SpaceEvenly
 	) {
-		val pad = state.getPadBeingEdited()
+		val pad = state.pads[padIndex]
 		var buttonNameBeingEdited by remember { mutableStateOf(pad?.name ?: "") }
 		var mediaPathBeingEdited by remember { mutableStateOf(pad?.action?.path ?: "") }
 
@@ -53,8 +54,8 @@ fun DialogBody(state: BoardState, padIndex: GridPosition) {
 		)
 		Button(
 			onClick = {
-				state.upsertPad(Pad(buttonNameBeingEdited, mediaPathBeingEdited, padIndex))
-				state.padPositionBeingEdited = null
+				state.addPad(Pad(buttonNameBeingEdited, mediaPathBeingEdited, padIndex))
+				padPositionBeingEdited = null
 			},
 			colors = ButtonDefaults.buttonColors(Color.Green)
 		) {
@@ -64,8 +65,8 @@ fun DialogBody(state: BoardState, padIndex: GridPosition) {
 
 		Button(
 			onClick = {
-				state.removePad(padIndex)
-				state.padPositionBeingEdited = null
+				state.removePadAtPosition(padIndex)
+				padPositionBeingEdited = null
 			},
 			colors = ButtonDefaults.buttonColors(Color.Red)
 		) {
