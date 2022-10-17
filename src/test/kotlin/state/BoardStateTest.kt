@@ -18,7 +18,7 @@ class BoardStateTest {
 		val rowCounts = listOf(2, 6, 3)
 
 		runBlockingTest {
-			val board = Board()
+			val board = BoardImpl()
 			launch {
 				for (rowCount in rowCounts) {
 					board.updateRowCount(rowCount)
@@ -39,7 +39,7 @@ class BoardStateTest {
 		val colCounts = listOf(2, 6, 3)
 
 		runBlockingTest {
-			val board = Board()
+			val board = BoardImpl()
 			launch {
 				for (colCount in colCounts) {
 					board.updateColCount(colCount)
@@ -60,7 +60,7 @@ class BoardStateTest {
 		val fakeAudio = mockk<Audio>(relaxed = true)
 
 		runBlockingTest {
-			val board = Board()
+			val board = BoardImpl()
 			launch {
 				board.addPad(Pad("Bloo", fakeAudio, 1 to 1))
 			}
@@ -80,7 +80,7 @@ class BoardStateTest {
 		val fakeAudio = mockk<Audio>(relaxed = true)
 
 		runBlockingTest {
-			val board = Board()
+			val board = BoardImpl()
 			board.addPad(Pad("Bloo", fakeAudio, 1 to 1))
 			assertTrue("Before we remove it, board has the pad") {
 				board.pads.first().containsKey(1 to 1)

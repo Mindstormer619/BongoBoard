@@ -8,17 +8,17 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import state.Board
+import state.BoardImpl
 import state.Pad
 import java.io.File
 
 class BoardSerializer(
-	private val board: Board,
+	private val board: BoardImpl,
 	private val serializedFile: File,
 	scope: CoroutineScope
 ) {
 	init {
-		board.subscribeToChanges(scope, ::saveToFile)
+		board.addSubscriber(scope, ::saveToFile)
 	}
 
 	@Suppress("BlockingMethodInNonBlockingContext")
@@ -39,14 +39,8 @@ class BoardSerializer(
 	fun serializeToString(boardState: BoardState) = Json.encodeToString(boardState)
 
 	companion object {
-		fun deserializeToBoard(jsonString: String): Board {
-			val boardState = Json.decodeFromString<BoardState>(jsonString)
-			return Board(
-				rows = boardState.rows,
-				cols = boardState.cols,
-				pads = boardState.pads.associateByTo(mutableMapOf(), Pad::coordinates)
-			)
-		}
+		fun deserializeToBoard(jsonString: String) =
+			Json.decodeFromString<BoardState>(jsonString).toBoard()
 	}
 }
 
@@ -55,4 +49,10 @@ data class BoardState(
 	val rows: Int,
 	val cols: Int,
 	val pads: List<Pad>
-)
+) {
+	fun toBoard() = BoardImpl(
+		rows = rows,
+		cols = cols,
+		pads = pads.associateByTo(mutableMapOf(), Pad::coordinates)
+	)
+}

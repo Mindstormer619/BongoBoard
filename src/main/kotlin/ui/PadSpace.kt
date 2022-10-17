@@ -9,33 +9,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
-import state.BoardState
 import state.GridPosition
 import ui.components.blackBorder
 import ui.components.setHeightWithMaxWidth
+import ui.state.BoardUi
+import ui.state.padPositionBeingEdited
 
 @Composable
 fun PadSpace(
 	height: Dp,
-	state: BoardState
+	state: BoardUi
 ) {
 	BoxWithConstraints(
 		modifier = Modifier.blackBorder().setHeightWithMaxWidth(height),
 		contentAlignment = Alignment.Center
 	) {
-		val rowHeight = maxHeight / state.boardRows
+		val rowHeight = maxHeight / state.rows
 		val rowModifier = Modifier.setHeightWithMaxWidth(rowHeight)
-		val cellModifier = Modifier.width(maxWidth / state.boardColumns).height(rowHeight)
+		val cellModifier = Modifier.width(maxWidth / state.cols).height(rowHeight)
 		Column {
-			for (row in 1..state.boardRows) {
+			for (row in 1..state.rows) {
 				Row(modifier = rowModifier) {
-					for (col in 1..state.boardColumns) {
+					for (col in 1..state.cols) {
 						Cell(cellModifier, state, row, col)
 					}
 				}
 			}
 		}
-		if (state.padPositionBeingEdited != null) {
+		if (padPositionBeingEdited != null) {
 			EditPadDialog(state)
 		}
 	}
@@ -44,7 +45,7 @@ fun PadSpace(
 @Composable
 fun Cell(
 	modifier: Modifier,
-	state: BoardState,
+	state: BoardUi,
 	row: Int,
 	col: Int
 ) {
@@ -52,7 +53,7 @@ fun Cell(
 	Box(
 		modifier = modifier.blackBorder()
 			.testTag("Cell:$coordinates")
-			.clickable(enabled = state.isEditMode()) { state.padPositionBeingEdited = coordinates }
+			.clickable(enabled = state.isEditMode()) { padPositionBeingEdited = coordinates }
 	) {
 		if (state.hasPadAt(coordinates)) {
 			Pad(state, coordinates)
@@ -61,12 +62,12 @@ fun Cell(
 }
 
 @Composable
-private fun BoxScope.Pad(state: BoardState, coordinates: GridPosition) {
+private fun BoxScope.Pad(state: BoardUi, coordinates: GridPosition) {
 	Button(
 		modifier = Modifier.matchParentSize(),
 		onClick = {
 			if (state.isEditMode()) {
-				state.padPositionBeingEdited = coordinates
+				padPositionBeingEdited = coordinates
 			} else {
 				state.activatePad(coordinates)
 			}

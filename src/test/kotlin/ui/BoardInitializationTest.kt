@@ -3,13 +3,16 @@ package ui
 import App
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.printToString
 import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
 import state.Audio
+import state.BoardImpl
 import state.Pad
-import state.rememberBoardState
+import ui.state.BoardUi
 
 class BoardInitializationTest {
 	@get:Rule
@@ -22,8 +25,6 @@ class BoardInitializationTest {
 				App()
 			}
 
-			onNodeWithText("50 Ten Hull").assertExists()
-			onNodeWithText("🎉").assertExists()
 			onNodeWithText("✏").assertExists() // Button to open edit mode
 			onNodeWithText("💾").assertDoesNotExist() // Button to save edits
 		}
@@ -52,11 +53,11 @@ class BoardInitializationTest {
 
 			setContent {
 				BongoBoard(
-					rememberBoardState(
-						mapOf(gridPosition to mockPad)
-					)
+					BoardUi(BoardImpl(pads = mutableMapOf(gridPosition to mockPad)))
 				)
 			}
+
+			println(onRoot().printToString())
 
 			onNodeWithText("E").performClick()
 			awaitIdle()

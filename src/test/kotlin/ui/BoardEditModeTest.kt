@@ -7,27 +7,30 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import state.BoardState
+import state.BoardImpl
+import ui.state.BoardUi
 import kotlin.test.assertEquals
 
 class BoardEditModeTest {
 	@get:Rule
 	val compose = createComposeRule()
 
-	private lateinit var boardState: BoardState
+	private lateinit var boardUiState: BoardUi
+	private lateinit var boardImpl: BoardImpl
 
 	@Before
 	fun setUp() {
-		boardState = BoardState()
-		boardState.updateRows(3)
-		boardState.toggleEdit() // set edit state initially
+		boardImpl = BoardImpl()
+		boardUiState = BoardUi(boardImpl)
+		boardUiState.updateRowCount(3)
+		boardUiState.toggleEdit() // set edit state initially
 	}
 
 	@Test
 	fun `given board in edit mode, clicking the save button switches it to play mode`() {
 		ui(compose) {
 			setContent {
-				BongoBoard(remember { boardState })
+				BongoBoard(remember { boardUiState })
 			}
 
 			onNodeWithText("💾").performClick()
@@ -41,33 +44,61 @@ class BoardEditModeTest {
 	fun `given board in edit mode, clicking + adds a row`() {
 		ui(compose) {
 			setContent {
-				BongoBoard(remember { boardState })
+				BongoBoard(remember { boardUiState })
 			}
-			assertEquals(3, boardState.boardRows)
+			assertEquals(3, boardImpl.rows.value)
 
 			val childOfRowEditor = hasParent(hasTestTag("rowEditor"))
 			onNode(childOfRowEditor.and(hasText("➕"))).performClick()
 			awaitIdle()
 
-			assertEquals(4, boardState.boardRows)
+			assertEquals(4, boardImpl.rows.value)
 		}
 	}
 
 	@Test
 	fun `given board with max rows in edit mode, clicking + does nothing`() {
 		ui(compose) {
-			boardState = BoardState(pads = mapOf(), boardRows = BoardState.MAX_ROWS)
-			boardState.toggleEdit()
-			setContent {
-				BongoBoard(remember { boardState })
-			}
-			assertEquals(BoardState.MAX_ROWS, boardState.boardRows)
+			// given
+			boardImpl = BoardImpl(rows = BoardImpl.MAX_ROWS)
+			boardUiState = BoardUi(boardImpl)
 
+			boardUiState.toggleEdit()
+			setContent {
+				BongoBoard(remember { boardUiState })
+			}
+			assertEquals(BoardImpl.MAX_ROWS, boardImpl.rows.value)
+
+			// when
 			val childOfRowEditor = hasParent(hasTestTag("rowEditor"))
 			onNode(childOfRowEditor.and(hasText("➕"))).performClick()
 			awaitIdle()
 
-			assertEquals(BoardState.MAX_ROWS, boardState.boardRows)
+			// then
+			assertEquals(BoardImpl.MAX_ROWS, boardImpl.rows.value)
+		}
+	}
+
+	@Test
+	fun `given board with max cols in edit mode, clicking + does nothing`() {
+		ui(compose) {
+			// given
+			boardImpl = BoardImpl(cols = BoardImpl.MAX_COLS)
+			boardUiState = BoardUi(boardImpl)
+
+			boardUiState.toggleEdit()
+			setContent {
+				BongoBoard(remember { boardUiState })
+			}
+			assertEquals(BoardImpl.MAX_COLS, boardImpl.cols.value)
+
+			// when
+			val colEditor = hasParent(hasTestTag("columnEditor"))
+			onNode(colEditor.and(hasText("➕"))).performClick()
+			awaitIdle()
+
+			// then
+			assertEquals(BoardImpl.MAX_COLS, boardImpl.cols.value)
 		}
 	}
 
@@ -75,7 +106,7 @@ class BoardEditModeTest {
 	fun `given board in edit mode, clicking blank space opens new pad editor`() {
 		ui(compose) {
 			setContent {
-				BongoBoard(remember { boardState })
+				BongoBoard(remember { boardUiState })
 			}
 
 			onNodeWithTag("Cell:${3 to 1}").performClick()
